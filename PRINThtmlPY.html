@@ -1,0 +1,107 @@
+<div>
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Python Fake Executor</title>
+<style>
+    .python-output {
+        background: #f0f0f0;
+        padding: 6px;
+        margin: 4px 0;
+        border-left: 3px solid #444;
+        font-family: monospace;
+        display: inline-block;
+    }
+</style>
+</head>
+<body>
+
+<div class="conteudo">
+    2 + 2 = <python>
+print(2 + 2)
+</python>
+</div>
+
+<div class="conteudo">
+    <p>Mensagem: <python>
+print("Olá mundo!")
+</python></p>
+</div>
+
+<div class="conteudo">
+    <h2>Imagem: <python>
+print('<img src="https://stihi.ru/pics/2019/01/08/2511.jpg" width="450">')
+</python></h2>
+</div>
+
+<div class="conteudo">
+    <h3>video: <python>
+print('<iframe width="761" height="428" src="https://www.youtube.com/embed/r3Pr1_v7hsw?list=RD8tE0GjSQpes" title="Foreigner - I Want To Know What Love Is (Official Music Video)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>')
+</python></h3>
+</div>
+<div class="conteudo">
+    Resultado das contas: <python>
+print(10 + 5)
+print(7 * 3)
+print(100 / 4)
+</python>
+
+    <p>Frases: <python>
+print("Olá amigo!")
+print("Este é um teste de strings.")
+print("Python fake funcionando!")
+</python></p>
+
+    <p>Conta + texto: <python>
+print("A soma de 8 + 12 é: " + String(8 + 12))
+</python></p>
+</div>
+
+<script>
+// Função que simula execução de Python com apenas print()
+function executarPythonFake(texto) {
+    const regex = /<python>([\s\S]*?)<\/python>/g;
+
+    return texto.replace(regex, (match, code) => {
+        const linhas = code.trim().split("\n");
+        let saida = "";
+
+        for (let linha of linhas) {
+            linha = linha.trim();
+
+            // Só permitir print(...)
+            if (!linha.startsWith("print(") || !linha.endsWith(")")) {
+                return "[ERRO: apenas print() é permitido]";
+            }
+
+            // Extrair conteúdo dentro de print(...)
+            const conteudo = linha.slice(6, -1);
+
+            try {
+                // Usar eval do JS para contas, strings e HTML
+                const resultado = eval(conteudo);
+                saida += resultado + "\n";
+            } catch {
+                return "[ERRO ao interpretar print()]";
+            }
+        }
+
+        return `<span class="python-output">${saida.trim()}</span>`;
+    });
+}
+
+// Processar TODAS as divs com a classe .conteudo
+window.onload = () => {
+    const divs = document.querySelectorAll(".conteudo");
+
+    divs.forEach(div => {
+        div.innerHTML = executarPythonFake(div.innerHTML);
+    });
+};
+</script>
+
+</body>
+</html>
+</div>
